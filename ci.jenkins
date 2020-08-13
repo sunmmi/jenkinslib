@@ -1,0 +1,32 @@
+pipeline {
+  agent none
+  stages {
+     agent { node { label 'master'} }
+     stage ("mavenBuild") {
+      steps {
+        script {
+          mvnHome = tool "mave"
+          sh "${mvnHome}/bin/mvn ${buildshell}"
+        }
+       }
+     }
+    stages("antBuild") {
+      agent { node { label 'master'} }
+      steps {
+        scripts {
+          antHome = tool "ant"
+          sh "${antHome}/bin/ant ${buildshell}"
+        }
+      }
+    }
+    stages("gradleBuild") {
+      agent { node { label 'master'} }
+      steps {
+        scripts {
+          gradleHome = tool "ant"
+          sh "${gradleHome}/bin/ant ${buildshell}"
+        }
+      }
+    }
+  }
+}
