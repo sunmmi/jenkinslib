@@ -3,7 +3,7 @@
 pipeline {
   agent none
   stages {
-     stage("mavenBuild") {
+     stage("MavenBuild") {
       agent { node { label 'master'} }
       steps {
         script {
@@ -12,7 +12,7 @@ pipeline {
         }
       }
     }
-     stage("antBuild") {
+     stage("AntBuild") {
       agent { node { label 'master'} }
       steps {
         script {
@@ -26,12 +26,21 @@ pipeline {
         }
       }
     }
-     stage("gradleBuild") {
+     stage("GradleBuild") {
       agent { node { label 'master'} }
       steps {
         script {
           gradleHome = tool "gradle"
           sh "${gradleHome}/bin/gradle ${buildshell}"
+        }
+      }
+    }
+    stage("NodejsBuild") {
+      agent { node { label 'master'} }
+      steps {
+        script {
+          nodeHome = tool "nodejs"
+          sh "source /etc/profile && ${nodeHome}/bin/npm ${buildshell}"
         }
       }
     }
