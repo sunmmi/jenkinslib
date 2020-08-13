@@ -3,30 +3,35 @@
 pipeline {
   agent none
   stages {
-     agent { node { label 'master'} }
-     stage ("mavenBuild") {
-      steps {
-        script {
-          mvnHome = tool "mave"
-          sh "${mvnHome}/bin/mvn ${buildshell}"
-        }
-       }
-     }
-    stages("antBuild") {
+     stage("mavenBuild") {
       agent { node { label 'master'} }
       steps {
-        scripts {
-          antHome = tool "ant"
-          sh "${antHome}/bin/ant ${buildshell}"
+        script {
+          antHome = tool "maven"
+          sh "${antHome}/bin/mvn ${buildshell}"
         }
       }
     }
-    stages("gradleBuild") {
+     stage("antBuild") {
       agent { node { label 'master'} }
       steps {
-        scripts {
-          gradleHome = tool "ant"
-          sh "${gradleHome}/bin/ant ${buildshell}"
+        script {
+          // 捕获异常
+          try {
+              antHome = tool "ant"
+              sh "${antHome}/bin/ant ${buildshell}"
+          } catch(e){
+            println(e)
+          }
+        }
+      }
+    }
+     stage("gradleBuild") {
+      agent { node { label 'master'} }
+      steps {
+        script {
+          gradleHome = tool "gradle"
+          sh "${gradleHome}/bin/gradle ${buildshell}"
         }
       }
     }
